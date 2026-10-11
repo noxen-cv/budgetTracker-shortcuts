@@ -1,0 +1,15 @@
+/* =============================================================
+   Monthly Analytics
+   Budget Tracker — Apple Shortcuts (Cherri)
+   
+   Purpose: Generate monthly spending reports, category 
+            breakdowns, and trend summaries.
+   
+   Reference: ../reference/Monthly Analytics.txt
+   ============================================================= */
+
+#define name "Monthly Analytics"
+#define color blue
+#define glyph chartBar
+
+// TODO: Implement based on reference shortcut

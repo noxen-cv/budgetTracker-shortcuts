@@ -1,0 +1,26 @@
+# Build output & Cherri compiler artifacts
+build/*.shortcut
+*.shortcut
+*.plist
+*_processed.cherri
+*_unsigned.shortcut
+
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+
+# VS Code
+.vscode/settings.json
+.vscode/launch.json
+
+# Environment / secrets
+.env
+.env.local
+
+# Misc
+*.log
+*.tmp
+assets/ref/*

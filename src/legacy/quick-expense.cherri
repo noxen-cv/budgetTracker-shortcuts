@@ -1,0 +1,15 @@
+/* =============================================================
+   Quick Expense (Instantaneous Entry)
+   Budget Tracker — Apple Shortcuts (Cherri)
+   
+   Purpose: Fast single-tap expense logging — minimal prompts,
+            designed for quick capture on the go.
+   
+   Reference: ../reference/REFERENCE - instantaneous.txt
+   ============================================================= */
+
+#define name "Quick Expense"
+#define color orange
+#define glyph bolt
+
+// TODO: Implement based on reference shortcut

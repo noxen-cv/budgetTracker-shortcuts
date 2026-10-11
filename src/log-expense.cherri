@@ -1,0 +1,139 @@
+/* =============================================================
+   Log Expense
+   Budget Tracker — Apple Shortcuts (Cherri)
+   
+   Purpose: Fast, append-only expense logger for daily spend
+            categories (Essentials, Discretionary).
+   
+   Data format: id|date|categoryId|amount|source|device|note
+   Reference:   asset/ref/Track Expenses.txt
+   ============================================================= */
+
+#define name "Log Expense"
+#define color gray
+#define glyph circledPlus
+
+#include 'actions/shortcuts'
+#include 'actions/documents'
+#include 'actions/calendar'
+#include 'actions/text'
+#include 'actions/device'
+#include 'common/constants.cherri'
+
+
+@null = ""
+
+// -------------------------------------------------------------
+// 1. Initial Input Parse (Share Sheet / Siri)
+// -------------------------------------------------------------
+@input = ShortcutInput
+@inputText = text(@input)
+@amount = 0
+if @inputText != "" {
+    @num = number(@inputText)
+    if @num > 0 {
+        @amount = @num  
+    }
+}
+
+// -------------------------------------------------------------
+// 2. Read Configs / First-Time Silent Bootstrap
+// -------------------------------------------------------------
+@budgetFile = getFile(@FILE_BUDGET, @null, false)
+if @budgetFile {
+    // Configs already exist
+} else {
+    // First-time silent setup: create directory structure
+    createFolder(@DIR_ROOT, @null)
+    createFolder(@DIR_CONFIG, @null)
+    createFolder(@DIR_DATA, @null)
+    createFolder(@DIR_RECEIPTS, @null)
+
+    // Write default seed configurations
+    @defaultBudget = @DEFAULT_BUDGET
+    saveFile(@FILE_BUDGET, @defaultBudget, false)
+
+    @defaultPrefs = @DEFAULT_PREFS
+    saveFile(@FILE_PREFS, @defaultPrefs, false)
+
+    // Reload the newly created budget file
+    @budgetFile = getFile(@FILE_BUDGET, @null, false)
+}
+@prefsFile = getFile(@FILE_PREFS, @null, false)
+
+// -------------------------------------------------------------
+// 3. Dynamic Category Picker (Filter where type = "spend")
+// -------------------------------------------------------------
+@groups = @budgetFile['groups']
+@names = []
+@nameToId = {}
+
+for group in @groups {
+    @categories = @group['categories']
+    for category in @categories {
+        @type = @category['type']
+        @typeText = text(@type)
+        if @typeText == "spend" {
+            @catName = @category['name']
+            @catId = @category['id']
+            @names += @catName
+            @nameToId = setValue(@nameToId, "{@catName}", "{@catId}")
+        }
+    }
+}
+
+@chosenName = chooseFromList(@names, "Select category:")
+@chosenId = getValue(@nameToId, "{@chosenName}")
+
+// -------------------------------------------------------------
+// 4, 5, 6, 7. Amount Prompt, Validation Loop, & Save
+// -------------------------------------------------------------
+for retry in 50 {
+    // Check if we have a valid amount (from input or prior prompt)
+    if @amount > 0 {
+        if @amount <= 1000000 {
+            // Amount is valid: handle optional note prompt
+            @noteToggle = @prefsFile['note']
+            @note = ""
+            if @noteToggle {
+                @note = prompt("Enter note (optional):")
+            }
+            @cleanNote = replaceText("|", "/", "{@note}")
+
+            // Generate consistent timestamps and device info
+            @now = currentDate()
+            @id = formatDate(@now, "Custom", "yyMMddHHmmss")
+            @date = formatDate(@now, "Custom", "yyyy-MM-dd HH:mm")
+            @monthStr = formatDate(@now, "Custom", "yyyy-MM")
+            @device = getDeviceDetail("Device Name")
+
+            // Assemble pipe-delimited record:
+            // id|date|categoryId|amount|source|device|note
+            @line = "{@id}|{@date}|{@chosenId}|{@amount}|manual|{@device}|{@cleanNote}"
+
+            // Append to current month's log: Expenses Tracker/data/<yyyy-MM>.txt
+            @filePath = "Expenses Tracker/data/{@monthStr}.txt"
+            appendToFile(@filePath, @line)
+
+            // Confirmation alert and exit
+            @currency = @prefsFile['currency']
+            alert("✓ {@currency}{@amount} · {@chosenName}")
+            stop()
+        }
+    }
+
+    // If invalid amount was supplied or entered, alert context-specifically
+    if @amount > 1000000 {
+        alert("Amount cannot exceed 1,000,000.", "Invalid Amount")
+    }
+    if @amount < 0 {
+        alert("Amount must be greater than 0.", "Invalid Amount")
+    }
+
+    // Prompt for amount
+    @promptedAmount = prompt("Enter amount:", "Number")
+    @amount = number(@promptedAmount)
+    if @amount == 0 {
+        alert("Amount must be greater than 0.", "Invalid Amount")
+    }
+}

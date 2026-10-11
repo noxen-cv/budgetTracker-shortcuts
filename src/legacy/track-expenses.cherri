@@ -1,0 +1,15 @@
+/* =============================================================
+   Track Expenses
+   Budget Tracker — Apple Shortcuts (Cherri)
+   
+   Purpose: Log a single expense entry with amount, category,
+            and optional note. Stores data to the expense ledger.
+   
+   Reference: ../reference/Track Expenses.txt
+   ============================================================= */
+
+#define name "Track Expenses"
+#define color green
+#define glyph moneySign
+
+// TODO: Implement based on reference shortcut

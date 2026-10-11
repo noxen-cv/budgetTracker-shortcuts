@@ -1,0 +1,82 @@
+{
+  "groups": [
+    {
+      "id": "financial_obligation",
+      "name": "Financial Obligation",
+      "categories": [
+        {
+          "id": "household_contributions",
+          "name": "Household Contributions",
+          "limit": 3000.00,
+          "type": "bill"
+        },
+        {
+          "id": "recurring_expenses",
+          "name": "Recurring Expenses",
+          "limit": 0.00,
+          "type": "bill"
+        }
+      ]
+    },
+    {
+      "id": "debt_repayments",
+      "name": "Debt Repayments",
+      "categories": [
+        {
+          "id": "laz_paylater",
+          "name": "Laz PayLater",
+          "limit": 1777.32,
+          "type": "bill"
+        },
+        {
+          "id": "lazloan",
+          "name": "LazLoan",
+          "limit": 602.34,
+          "type": "bill"
+        },
+        {
+          "id": "moretyme",
+          "name": "MoreTyme",
+          "limit": 1277.44,
+          "type": "bill"
+        }
+      ]
+    },
+    {
+      "id": "spendable",
+      "name": "Spendable Expenses (Allowance)",
+      "categories": [
+        {
+          "id": "essentials",
+          "name": "Essentials",
+          "limit": 2500.00,
+          "type": "spend"
+        },
+        {
+          "id": "discretionary",
+          "name": "Discretionary",
+          "limit": 1769.78,
+          "type": "spend"
+        }
+      ]
+    },
+    {
+      "id": "cold_savings",
+      "name": "Cold Savings",
+      "categories": [
+        {
+          "id": "long_term_wishlist",
+          "name": "Long Term Wishlist",
+          "limit": 3000.00,
+          "type": "savings"
+        },
+        {
+          "id": "emergency_fund",
+          "name": "Emergency Fund",
+          "limit": 1000.00,
+          "type": "savings"
+        }
+      ]
+    }
+  ]
+}

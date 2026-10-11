@@ -1,0 +1,160 @@
+#include 'actions/text'
+#include 'actions/documents'
+#define color darkgray
+#define glyph circledPlus
+
+@out = ShortcutInput
+
+if !ShortcutInput {
+	@out = 1
+}
+const Parent = createFolder("Expenses Tracker")
+const Receipts = createFolder("Receipts", Parent)
+const preferences = getFile("prefs.json", Parent, false)
+getDictionary(preferences)
+@prefs
+const Categories = getFile("categories.txt", Parent, false)
+const File = getFile("transactions.json", Parent, false)
+
+if !Categories {
+	alert("Welcome to Expenses Tracker!\n\nIt seems that you haven't created any Expense/Income categories names yet!\n\nNavigate to Settings, add some categories and get ready for your first transaction or..\nRestore from iCloud backup ", "")
+}
+getDictionary(File)
+@dataD
+const user = getDeviceDetail("Device Name")
+
+if @out !contains "@?@" {
+	const Matches = containsText(@out, "^\d{1,3}$")
+	if !Matches {
+		const name = getDictionary(ShortcutInput)
+		const UpdatedText = replaceText("[^\d.,]", "", name['amount'], true)
+		getNumbers(UpdatedText)
+		if !Categories {
+			alert("Welcome to Expenses Tracker!\n\nIt seems that you haven't created any Expense/Income categories names yet!\n\nNavigate to Settings, add some categories and get ready for your first transaction or..\nRestore from iCloud backup ", "")
+		}
+		const SplitText = splitText(Categories)
+		chooseFromList(SplitText, "Select a Category ")
+		setValue(@dataD, "{CurrentDate}{}")
+		@dataD
+		saveFile("transactions.json", @dataD, true)
+		stop()
+	}
+	if @out == 1 {
+		currentDate()
+		@t_date
+		if !Categories {
+			alert("\nIt seems that you haven't created any Expense/Income categories names yet!\n\nNavigate to Settings, add some categories and come back for your first transaction. ", "⚠️")
+			const Number = 1
+			runSelf(Number)
+			stop()
+		}
+		const SplitText1 = splitText(Categories)
+		const List = list("Dining Out", "Snacks", "Transportation", "School Activities", "Others")
+		const SelectedItem = chooseFromList(List, "Allowance spent on?", false, false)
+		@chosenCat = SelectedItem
+		if SelectedItem == "Others" {
+			const AskForInput = prompt("Enter new category name:")
+			uppercase(AskForInput)
+			const Files = filterFiles(SplitText1, "Random")
+			if !Files {
+				appendToFile("categories.txt")
+			}
+			@chosenCat
+		}
+		getFileDetail(nil, IfResult)
+		const ProvidedInput = prompt("Transaction amount ({@prefs['c']})", "Number")
+		if ProvidedInput < 1000000 {
+		} else {
+			confirm("\n⚠︎ Invalid Amount, Please Try Again!")
+			const Number1 = 1
+			runSelf(Number1)
+			stop()
+		}
+		getDeviceDetail("")
+		const Dictionary = setValue(@dataD, "{@t_date}{@chosenCat}")
+		saveFile("transactions.json", Dictionary, true)
+		// Shows Monthly Analysis Here
+
+		const Text = "{\\"0\\":\\"▎\\",\\"1\\":\\"█\\",\\"2\\":\\"██\\",\\"3\\":\\"███\\",\\"4\\":\\"████\\",\\"5\\":\\"█████\\",\\"6\\":\\"██████\\",\\"7\\":\\"███████\\",\\"8\\":\\"████████\\",\\"9\\":\\"█████████\\",\\"10\\":\\"██████████\\"}"
+		getDictionary(Text)
+		@chart
+		const File1 = getFile("categories.txt", Parent, false)
+		splitText(File1)
+		@cats
+		const File2 = getFile("transactions.json", Parent, false)
+		getDictionary(File2)
+		@db
+		@title = CurrentDate
+		@timeFrame = CurrentDate
+		containsText(@db['Keys'], "(?m)^{@timeFrame}.*")
+		@keys
+		const Count = count(@keys)
+		if Count < 1 {
+			alert("⚠︎ No Transactions found for {@title}", "")
+			stop()
+		}
+		for _ in @keys {
+			@amounts_ += @db[@RepeatItem]
+		}
+		const Sum = statistic("Sum", nil)
+		if Sum > -1000000000 {
+			ceil(Sum, "Tenths")
+		} else {
+			ceil(0, "Tenths")
+		}
+		formatNumber(IfResult1, 1)
+		@MonthTotal
+		for _ in @cats {
+			@index = @RepeatIndex
+			const Matches1 = containsText(@keys, "(?m)^\d+{@RepeatItem}$")
+			const SplitText2 = splitText(Matches1)
+			const Count1 = count(SplitText2)
+			@amounts = Count1
+			for _ in SplitText2 {
+				const DictionaryValue = getValue(@db, @RepeatItem2)
+				getDictionary(DictionaryValue)
+				@transaction
+				@amounts = @transaction
+			}
+			const Sum1 = statistic("Sum", nil)
+			if Sum1 > -100000000 {
+				ceil(Sum1, "Tenths")
+			} else {
+				ceil(0, "Tenths")
+			}
+			@CatTotal = Sum1 - Count1
+			@catTotalList = @CatTotal
+			if @MonthTotal > -1000000000 {
+				const CalculationResult = @CatTotal * 100
+				const CalculationResult1 = CalculationResult / @MonthTotal
+				ceil(CalculationResult1, "Tenths")
+				@
+			} else {
+				ceil(0, "Tenths")
+				@
+			}
+			const RoundedNumber = ceil(@, "Ones Place")
+			if RoundedNumber < 1 {
+				@bar = RoundedNumber
+			} else {
+				if RoundedNumber <> 1 {
+					@bar = @chart['0']
+				} else {
+					if RoundedNumber == 100 {
+						@bar = @chart['10']
+					} else {
+						replaceText("^(\d)\d$", "$1", RoundedNumber, false, true)
+						@bar = @chart[]
+					}
+				}
+			}
+		}
+		if !RepeatResults {
+			alert("No results found ", "⚠︎")
+			stop()
+		}
+		const CombinedText = joinText(RepeatResults)
+		const RenamedItem = setName(CombinedText, "Results.vcf")
+		chooseFromList(RenamedItem)
+	}
+}

@@ -1,0 +1,15 @@
+/* =============================================================
+   Expenses Tracker (Main Hub)
+   Budget Tracker — Apple Shortcuts (Cherri)
+   
+   Purpose: Main menu/hub shortcut that routes to sub-shortcuts
+            (track, view, analytics, settings).
+   
+   Reference: ../reference/REFERENCE - Expenses Tracker.txt
+   ============================================================= */
+
+#define name "Expenses Tracker"
+#define color green
+#define glyph moneySign
+
+// TODO: Implement based on reference shortcut
